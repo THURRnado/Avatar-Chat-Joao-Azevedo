@@ -92,8 +92,18 @@ class ChatWindow(QMainWindow):
         super().resizeEvent(event)
 
     def load_avatar_image(self):
-        pixmap = QPixmap("avatar/avatarJA_parado.png")
+        pixmap = QPixmap("avatar/solo/avatarJA_parado.png")
         if not pixmap.isNull():
             self.avatar_label.setPixmap(pixmap.scaled(340,340, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             self.avatar_label.setText("Imagem\nnão\nencontrada")
+
+    def set_avatar_speaking(self):
+        pixmap = QPixmap("avatar/solo/avatarJA_falando.png")
+        if not pixmap.isNull():
+            self.avatar_label.setPixmap(pixmap.scaled(340, 340, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+
+    def set_avatar_idle(self):
+        pixmap = QPixmap("avatar/solo/avatarJA_parado.png")
+        if not pixmap.isNull():
+            self.avatar_label.setPixmap(pixmap.scaled(340, 340, Qt.KeepAspectRatio, Qt.SmoothTransformation))

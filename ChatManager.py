@@ -1,25 +1,35 @@
 from PySide6.QtWidgets import QLabel, QHBoxLayout, QWidget
+from PySide6.QtCore import QTimer
 
 class ChatManager:
     def __init__(self, messages_layout, scroll_area, input_widget=None):
         self.messages_layout = messages_layout
         self.scroll_area = scroll_area
-        self.input_widget = input_widget  # Opcional, para limpar depois de enviar
+        self.input_widget = input_widget
 
     def send_message(self, text):
         text = text.strip()
         if not text:
             return
 
-        # Adiciona mensagem do usuário
+        # Mensagem do usuário
         self.add_message(text, is_user=True)
 
-        # Aqui você pode adicionar resposta do bot
-        self.add_message("Resposta do bot", is_user=False)
+        # Avatar "falando"
+        main_window = self.scroll_area.window()  # pega a janela principal
+        if hasattr(main_window, "set_avatar_speaking"):
+            main_window.set_avatar_speaking()
 
-        # Limpa o input se fornecido
+        # Resposta do bot (simulação com delay)
+        QTimer.singleShot(400, lambda: self.add_message("Resposta do bot", is_user=False))
+
+        # Depois de 2 segundos, volta pro avatar parado
+        QTimer.singleShot(800, lambda: main_window.set_avatar_idle())
+
+        # Limpa input
         if self.input_widget:
             self.input_widget.clear()
+
 
     def add_message(self, text, is_user=False):
         # Cria o balão
