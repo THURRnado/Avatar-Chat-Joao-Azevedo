@@ -1,5 +1,7 @@
 from PySide6.QtWidgets import QLabel, QHBoxLayout, QWidget
 from PySide6.QtCore import QTimer
+from ChatResponse import ChatResponse
+import pygame, os
 
 class ChatManager:
     def __init__(self, messages_layout, scroll_area, input_widget=None):
@@ -15,20 +17,49 @@ class ChatManager:
         # Mensagem do usuário
         self.add_message(text, is_user=True)
 
-        # Avatar "falando"
-        main_window = self.scroll_area.window()  # pega a janela principal
-        if hasattr(main_window, "set_avatar_speaking"):
-            main_window.set_avatar_speaking()
+        # Balão temporário "..."
+        placeholder_bubble = self.add_message("...", is_user=False)
 
-        # Resposta do bot (simulação com delay)
-        QTimer.singleShot(400, lambda: self.add_message("Resposta do bot", is_user=False))
+        def process_and_update():
+            chat = ChatResponse()
+            resposta_texto = chat.process(message=text)
 
-        # Depois de 2 segundos, volta pro avatar parado
-        QTimer.singleShot(800, lambda: main_window.set_avatar_idle())
+            # Atualiza o balão "..." para a resposta real
+            placeholder_bubble.setText(resposta_texto)
 
-        # Limpa input
-        if self.input_widget:
-            self.input_widget.clear()
+            # Avatar "falando"
+            main_window = self.scroll_area.window()
+            if hasattr(main_window, "set_avatar_speaking"):
+                main_window.set_avatar_speaking()
+
+            def tocar_audio_e_voltar_avatar():
+                pygame.mixer.init()
+                pygame.mixer.music.load(chat.audio_file)
+                pygame.mixer.music.play()
+
+                def check_audio():
+                    if pygame.mixer.music.get_busy():
+                        # ainda tocando, checa novamente em 100ms
+                        QTimer.singleShot(100, check_audio)
+                    else:
+                        # áudio terminou
+                        main_window.set_avatar_idle()  # volta avatar
+
+                        try:
+                            os.remove(chat.audio_file)
+                            print(f"Arquivo {chat.audio_file} removido.")
+                        except Exception as e:
+                            print(f"Erro ao remover o áudio: {e}")
+
+                # inicia a checagem assíncrona
+                QTimer.singleShot(100, check_audio)
+
+            # Chama a função para tocar o áudio
+            tocar_audio_e_voltar_avatar()
+
+        # Roda o processamento em um timer (não trava a UI)
+        QTimer.singleShot(100, process_and_update)
+
 
 
     def add_message(self, text, is_user=False):
@@ -36,7 +67,7 @@ class ChatManager:
         bubble = QLabel()
         bubble.setText(text)
         bubble.setWordWrap(True)
-        bubble.setMaximumWidth(self.scroll_area.width())  # metade da tela
+        bubble.setMaximumWidth(self.scroll_area.width())  # limite da largura
         bubble.setStyleSheet("""
             QLabel {
                 background-color: #4f4e4e;
@@ -68,3 +99,7 @@ class ChatManager:
         self.scroll_area.verticalScrollBar().setValue(
             self.scroll_area.verticalScrollBar().maximum()
         )
+
+        # Retorna o QLabel do balão para atualizar depois
+        return bubble
+
