@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QLabel, QHBoxLayout, QWidget
 from PySide6.QtCore import QTimer
 from ChatResponse import ChatResponse
-import pygame, os
+import pygame
 
 class ChatManager:
     def __init__(self, messages_layout, scroll_area, input_widget=None):
@@ -44,12 +44,8 @@ class ChatManager:
                     else:
                         # áudio terminou
                         main_window.set_avatar_idle()  # volta avatar
-
-                        try:
-                            os.remove(chat.audio_file)
-                            print(f"Arquivo {chat.audio_file} removido.")
-                        except Exception as e:
-                            print(f"Erro ao remover o áudio: {e}")
+                        pygame.mixer.music.stop()
+                        pygame.mixer.quit()
 
                 # inicia a checagem assíncrona
                 QTimer.singleShot(100, check_audio)
