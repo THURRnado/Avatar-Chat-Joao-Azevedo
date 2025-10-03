@@ -19,6 +19,8 @@ class ChatManager:
 
         # Balão temporário "..."
         placeholder_bubble = self.add_message("...", is_user=False)
+        main_window = self.scroll_area.window()
+        main_window.set_avatar_thinking()
 
         def process_and_update():
             chat = ChatResponse()
@@ -28,9 +30,7 @@ class ChatManager:
             placeholder_bubble.setText(resposta_texto)
 
             # Avatar "falando"
-            main_window = self.scroll_area.window()
-            if hasattr(main_window, "set_avatar_speaking"):
-                main_window.set_avatar_speaking()
+            main_window.set_avatar_speaking()
 
             def tocar_audio_e_voltar_avatar():
                 pygame.mixer.init()
@@ -55,7 +55,6 @@ class ChatManager:
 
         # Roda o processamento em um timer (não trava a UI)
         QTimer.singleShot(100, process_and_update)
-
 
 
     def add_message(self, text, is_user=False):

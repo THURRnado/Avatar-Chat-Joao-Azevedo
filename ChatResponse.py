@@ -25,8 +25,9 @@ class ChatResponse:
         )
 
     def process(self, message: str) -> str:
-        resposta = self.agent.run(message)
-        texto = resposta.content
+        #resposta = self.agent.run(message)
+        #texto = resposta.content
+        texto = "Como posso ajudar?"
         self.gerar_audio(texto)
         return texto
 
