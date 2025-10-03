@@ -30,6 +30,7 @@ class ChatManager:
             placeholder_bubble.setText(resposta_texto)
 
             # Avatar "falando"
+            main_window = self.scroll_area.window()
             main_window.set_avatar_speaking()
 
             def tocar_audio_e_voltar_avatar():

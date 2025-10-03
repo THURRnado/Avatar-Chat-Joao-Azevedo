@@ -21,8 +21,8 @@ class ChatWindow(QMainWindow):
 
         # --- Avatar Animation ---
         self.speaking_frames = [
-            "avatar/solo/avatar_ja_falando_sf.png",
-            "avatar/solo/avatar_ja_falando2_sem_fundo.png"
+            "avatar/solo/avatar_ja_falando_sf_1024_1024.png",
+            "avatar/solo/avatar_ja_falando2_sf_1024_1024.png"
         ]
         self.current_frame = 0
         self.speaking_timer = QTimer()
@@ -102,12 +102,12 @@ class ChatWindow(QMainWindow):
     def set_avatar_idle(self):
         self.speaking_timer.stop()
         self.avatar_state = "idle"
-        self.load_avatar_image("avatar/solo/avatar_ja_base_sf.png")
+        self.load_avatar_image("avatar/solo/avatar_ja_base_sf_1024_1024.png")
 
     def set_avatar_thinking(self):
         self.speaking_timer.stop()
         self.avatar_state = "thinking"
-        self.load_avatar_image("avatar/solo/avatar_ja_pensando_sem_fundo.png")
+        self.load_avatar_image("avatar/solo/avatar_ja_pensando_sf_1024_1024.png")
 
     def set_avatar_speaking(self):
         self.avatar_state = "speaking"
