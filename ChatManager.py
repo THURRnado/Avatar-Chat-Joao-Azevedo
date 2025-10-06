@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QLabel, QHBoxLayout, QWidget
 from PySide6.QtCore import QTimer
 from ChatResponse import ChatResponse
 import pygame
+from ChatBubble import ChatBubble
 
 class ChatManager:
     def __init__(self, messages_layout, scroll_area, input_widget=None):
@@ -27,7 +28,7 @@ class ChatManager:
             resposta_texto = chat.process(message=text)
 
             # Atualiza o balão "..." para a resposta real
-            placeholder_bubble.setText(resposta_texto)
+            placeholder_bubble.label.setText(resposta_texto)
 
             # Avatar "falando"
             main_window = self.scroll_area.window()
@@ -59,43 +60,22 @@ class ChatManager:
 
 
     def add_message(self, text, is_user=False):
-        # Cria o balão
-        bubble = QLabel()
-        bubble.setText(text)
-        bubble.setWordWrap(True)
-        bubble.setMaximumWidth(self.scroll_area.width())  # limite da largura
-        bubble.setStyleSheet("""
-            QLabel {
-                background-color: #4f4e4e;
-                color: white;
-                font-weight: bold;
-                font-family: system-ui, -apple-system, sans-serif;
-                padding: 16px 20px;
-                border-radius: 18px;
-                font-size: large;
-            }
-        """)
-
-        # Cor e alinhamento
+        bubble = ChatBubble(text, is_user)
+        
         bubble_layout = QHBoxLayout()
         if is_user:
-            bubble.setStyleSheet(bubble.styleSheet() + "background-color: #008f7a;")
             bubble_layout.addStretch()
             bubble_layout.addWidget(bubble)
         else:
-            bubble.setStyleSheet(bubble.styleSheet() + "background-color: #2d2d2d;")
             bubble_layout.addWidget(bubble)
             bubble_layout.addStretch()
 
         container = QWidget()
         container.setLayout(bubble_layout)
 
-        # Adiciona ao layout e rola para o final
         self.messages_layout.addWidget(container)
         self.scroll_area.verticalScrollBar().setValue(
             self.scroll_area.verticalScrollBar().maximum()
         )
-
-        # Retorna o QLabel do balão para atualizar depois
         return bubble
 
