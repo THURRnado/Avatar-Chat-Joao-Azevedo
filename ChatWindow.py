@@ -8,7 +8,7 @@ class ChatWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chat com JA")
-        self.setGeometry(100, 100, 1400, 900)
+        self.setGeometry(100, 100, 1280, 720)
         self.setStyleSheet("background-color: #4f4e4e;")
 
         self.setup_ui()
@@ -41,7 +41,7 @@ class ChatWindow(QMainWindow):
 
         # Espaço para avatar
         left_spacer = QWidget()
-        left_spacer.setFixedWidth(470)
+        left_spacer.setFixedWidth(520)
         left_spacer.setStyleSheet("background-color: transparent;")
 
         # Layout do chat
@@ -89,13 +89,13 @@ class ChatWindow(QMainWindow):
 
         # Avatar
         self.avatar_label = QLabel(self)
-        self.avatar_label.setFixedSize(450, 450)
-        self.avatar_label.move(20, self.height() - 440)
+        self.avatar_label.setFixedSize(600, 600)
+        self.avatar_label.move(20, self.height() - 470)
         self.avatar_label.setStyleSheet("background-color: transparent; border:none; border-radius:20%;")
 
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            self.avatar_label.move(20, self.height() - 440)
+            self.avatar_label.move(20, self.height() - 470)
         super().resizeEvent(event)
 
     # -------------------- Avatar States --------------------
@@ -118,7 +118,7 @@ class ChatWindow(QMainWindow):
     def load_avatar_image(self, path):
         pixmap = QPixmap(path)
         if not pixmap.isNull():
-            self.avatar_label.setPixmap(pixmap.scaled(440, 440, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            self.avatar_label.setPixmap(pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             self.avatar_label.setText("Imagem\nnão\nencontrada")
 
@@ -129,7 +129,7 @@ class ChatWindow(QMainWindow):
 
         pixmap = QPixmap(self.speaking_frames[self.current_frame])
         if not pixmap.isNull():
-            self.avatar_label.setPixmap(pixmap.scaled(440, 440, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            self.avatar_label.setPixmap(pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
         self.current_frame += 1
         if self.current_frame >= len(self.speaking_frames):
