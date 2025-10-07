@@ -11,7 +11,12 @@ class ChatBubble(QWidget):
 
         self.label = QLabel(text)
         self.label.setWordWrap(True)
-        self.label.setStyleSheet(f"color: white; font-weight: bold; font-family: system-ui;")
+        self.label.setStyleSheet("""
+            color: white; 
+            font-weight: bold; 
+            font-family: system-ui; 
+            font-size: 24px;   /* tamanho da fonte */
+        """)
         
         layout = QVBoxLayout()
         layout.addWidget(self.label)

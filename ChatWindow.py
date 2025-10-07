@@ -1,12 +1,23 @@
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, 
-    QLineEdit, QScrollArea
+    QLineEdit, QScrollArea, QGraphicsOpacityEffect
 )
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPixmap, QPainter, QColor
 
 from ChatManager import ChatManager
+import os, random
+from functools import partial
 
+
+def load_frames_from_folder(folder_path):
+    # Lista todos os arquivos da pasta e filtra apenas PNG
+    frames = [
+        os.path.join(folder_path, f)
+        for f in sorted(os.listdir(folder_path))
+        if f.lower().endswith(".png")
+    ]
+    return frames
 
 # ================= Central Widget com fundo =================
 class CentralWidget(QWidget):
@@ -32,7 +43,7 @@ class ChatWindow(QMainWindow):
         self.setGeometry(100, 100, 1280, 720)
 
         # Fundo
-        self.background_pixmap = QPixmap("avatar/fundo_farol/fundo_ja_farol.png")
+        self.background_pixmap = QPixmap("avatar/fundo_farol/tela_de_fundo.jpg")
         
         # Central widget com fundo
         central_widget = CentralWidget(self.background_pixmap)
@@ -48,16 +59,18 @@ class ChatWindow(QMainWindow):
             input_widget=self.message_input
         )
 
-        # Avatar Animation
-        self.speaking_frames = [
-            "avatar/solo/avatar_ja_falando_sf_1024_1024.png",
-            "avatar/solo/avatar_ja_falando2_sf_1024_1024.png"
-        ]
-        self.current_frame = 0
-        self.speaking_timer = QTimer()
+        self.avatar_frames = {
+            "idle": load_frames_from_folder("avatar/solo/avatar_parado"),
+            "thinking": load_frames_from_folder("avatar/solo/avatar_pensando"),
+            "speaking": load_frames_from_folder("avatar/solo/avatar_falando"),
+        }
 
+        self.avatar_timer = QTimer()
+        self.avatar_interval = 2000
         self.avatar_state = "idle"
-        self.set_avatar_idle()  # inicia com avatar idle
+        self.avatar_timer.timeout.connect(self.update_avatar_frame)
+        self.set_avatar_idle()
+        
 
     # ================= Setup UI =================
     def setup_ui(self, central_widget):
@@ -72,7 +85,7 @@ class ChatWindow(QMainWindow):
 
         # Layout do chat
         chat_layout = QVBoxLayout()
-        chat_layout.setContentsMargins(0, 0, 0, 200)
+        chat_layout.setContentsMargins(0, 0, 0, 300)
         chat_layout.setSpacing(10)
 
         # Scroll area para mensagens
@@ -117,57 +130,67 @@ class ChatWindow(QMainWindow):
 
         # Avatar
         self.avatar_label = QLabel(self)
-        self.avatar_label.setFixedSize(650, 650)
-        self.avatar_label.move(200, self.height() - 550)
+        self.avatar_label.setFixedSize(700, 700)
+        self.avatar_label.move(50, self.height() - 700)
         self.avatar_label.setStyleSheet(
             "background-color: transparent; border:none; border-radius:20%;"
         )
 
+
     # ================= Redimensionamento =================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            self.avatar_label.move(200, self.height() - 550)
+            self.avatar_label.move(50, self.height() - 700)
         super().resizeEvent(event)
 
     # ================= Estados do avatar =================
     def set_avatar_idle(self):
-        self.speaking_timer.stop()
+        self.avatar_timer.stop()
         self.avatar_state = "idle"
-        self.load_avatar_image("avatar/solo/avatar_ja_base_sf_1024_1024.png")
+        self.avatar_interval = 8000
+        self.show_current_frame()  # mostra o primeiro frame imediatamente
+        self.avatar_timer.start(self.avatar_interval)
 
     def set_avatar_thinking(self):
-        self.speaking_timer.stop()
+        self.avatar_timer.stop()
         self.avatar_state = "thinking"
-        self.load_avatar_image("avatar/solo/avatar_ja_pensando_sf_1024_1024.png")
+        self.avatar_interval = 2000
+        self.show_current_frame()
+        self.avatar_timer.start(self.avatar_interval)
 
     def set_avatar_speaking(self):
+        self.avatar_timer.stop()
         self.avatar_state = "speaking"
-        self.current_frame = 0
-        self.speaking_timer.singleShot(200, self.update_speaking_avatar)
+        self.avatar_interval = 2000
+        self.show_current_frame()
+        self.avatar_timer.start(self.avatar_interval)
 
     # ================= Helper =================
     def load_avatar_image(self, path):
         pixmap = QPixmap(path)
         if not pixmap.isNull():
             self.avatar_label.setPixmap(
-                pixmap.scaled(500, 500, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                pixmap.scaled(700, 700, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             )
         else:
             self.avatar_label.setText("Imagem\nnão\nencontrada")
 
-    def update_speaking_avatar(self):
-        if self.avatar_state != "speaking":
-            self.speaking_timer.stop()
+
+    def show_current_frame(self):
+        if self.avatar_state not in self.avatar_frames:
+            return
+        frames = self.avatar_frames[self.avatar_state]
+        if not frames:
             return
 
-        pixmap = QPixmap(self.speaking_frames[self.current_frame])
+        self.current_frame = random.randint(0, len(frames)-1)
+        pixmap = QPixmap(frames[self.current_frame])
         if not pixmap.isNull():
             self.avatar_label.setPixmap(
-                pixmap.scaled(650, 650, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                pixmap.scaled(700, 700, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             )
 
-        self.current_frame += 1
-        if self.current_frame >= len(self.speaking_frames):
-            self.current_frame = 0
 
-        self.speaking_timer.singleShot(2000, self.update_speaking_avatar)
+    def update_avatar_frame(self):
+        self.show_current_frame()
+        self.avatar_timer.setInterval(self.avatar_interval)
