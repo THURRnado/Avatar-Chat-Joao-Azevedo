@@ -40,10 +40,10 @@ class ChatWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chat com JA")
-        self.setGeometry(100, 100, 1280, 720)
+        self.setGeometry(0, 0, 1200, 1200)
 
         # Fundo
-        self.background_pixmap = QPixmap("avatar/fundo_farol/tela_de_fundo.jpg")
+        self.background_pixmap = QPixmap("avatar/fundo_farol/gab_gov_.png")
         
         # Central widget com fundo
         central_widget = CentralWidget(self.background_pixmap)
@@ -131,7 +131,7 @@ class ChatWindow(QMainWindow):
         # Avatar
         self.avatar_label = QLabel(self)
         self.avatar_label.setFixedSize(700, 700)
-        self.avatar_label.move(50, self.height() - 700)
+        self.avatar_label.move(100, self.height() - 700)
         self.avatar_label.setStyleSheet(
             "background-color: transparent; border:none; border-radius:20%;"
         )
@@ -140,7 +140,7 @@ class ChatWindow(QMainWindow):
     # ================= Redimensionamento =================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            self.avatar_label.move(50, self.height() - 700)
+            self.avatar_label.move(100, self.height() - 700)
         super().resizeEvent(event)
 
     # ================= Estados do avatar =================

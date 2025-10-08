@@ -15,7 +15,7 @@ class ChatBubble(QWidget):
             color: white; 
             font-weight: bold; 
             font-family: system-ui; 
-            font-size: 24px;   /* tamanho da fonte */
+            font-size: 16px;   /* tamanho da fonte */
         """)
         
         layout = QVBoxLayout()
