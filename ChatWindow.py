@@ -42,6 +42,8 @@ class ChatWindow(QMainWindow):
         self.setWindowTitle("Chat com JA")
         self.setGeometry(0, 0, 1200, 1200)
 
+        self.avatar_zoom = 1.3
+
         # Fundo
         self.background_pixmap = QPixmap("avatar/fundo_farol/gab_gov_.png")
         
@@ -80,12 +82,12 @@ class ChatWindow(QMainWindow):
 
         # Espaço para avatar
         left_spacer = QWidget()
-        left_spacer.setFixedWidth(720)
+        left_spacer.setFixedWidth(700)
         left_spacer.setStyleSheet("background-color: transparent;")
 
         # Layout do chat
         chat_layout = QVBoxLayout()
-        chat_layout.setContentsMargins(0, 0, 0, 300)
+        chat_layout.setContentsMargins(0, 0, 0, 500)
         chat_layout.setSpacing(10)
 
         # Scroll area para mensagens
@@ -130,8 +132,8 @@ class ChatWindow(QMainWindow):
 
         # Avatar
         self.avatar_label = QLabel(self)
-        self.avatar_label.setFixedSize(700, 700)
-        self.avatar_label.move(100, self.height() - 700)
+        self.avatar_label.setFixedSize(1000, 1000)
+        self.avatar_label.move(80, self.height() - 900)
         self.avatar_label.setStyleSheet(
             "background-color: transparent; border:none; border-radius:20%;"
         )
@@ -140,7 +142,7 @@ class ChatWindow(QMainWindow):
     # ================= Redimensionamento =================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            self.avatar_label.move(100, self.height() - 700)
+            self.avatar_label.move(80, self.height() - 900)
         super().resizeEvent(event)
 
     # ================= Estados do avatar =================
@@ -186,8 +188,9 @@ class ChatWindow(QMainWindow):
         self.current_frame = random.randint(0, len(frames)-1)
         pixmap = QPixmap(frames[self.current_frame])
         if not pixmap.isNull():
+            size = int(700 * self.avatar_zoom)
             self.avatar_label.setPixmap(
-                pixmap.scaled(700, 700, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                pixmap.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             )
 
 
