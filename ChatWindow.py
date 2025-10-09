@@ -45,7 +45,7 @@ class ChatWindow(QMainWindow):
         self.avatar_zoom = 1.3
 
         # Fundo
-        self.background_pixmap = QPixmap("avatar/fundo_farol/gab_gov_.png")
+        self.background_pixmap = QPixmap("avatar/fundo_farol/gab_gor3_des.jpg")
         
         # Central widget com fundo
         central_widget = CentralWidget(self.background_pixmap)
@@ -66,6 +66,8 @@ class ChatWindow(QMainWindow):
             "thinking": load_frames_from_folder("avatar/solo/avatar_pensando"),
             "speaking": load_frames_from_folder("avatar/solo/avatar_falando"),
         }
+
+        self.current_frame = 0
 
         self.avatar_timer = QTimer()
         self.avatar_interval = 2000
@@ -133,7 +135,7 @@ class ChatWindow(QMainWindow):
         # Avatar
         self.avatar_label = QLabel(self)
         self.avatar_label.setFixedSize(1000, 1000)
-        self.avatar_label.move(80, self.height() - 900)
+        self.avatar_label.move(50, self.height() - 900)
         self.avatar_label.setStyleSheet(
             "background-color: transparent; border:none; border-radius:20%;"
         )
@@ -142,7 +144,7 @@ class ChatWindow(QMainWindow):
     # ================= Redimensionamento =================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            self.avatar_label.move(80, self.height() - 900)
+            self.avatar_label.move(50, self.height() - 900)
         super().resizeEvent(event)
 
     # ================= Estados do avatar =================
@@ -150,7 +152,7 @@ class ChatWindow(QMainWindow):
         self.avatar_timer.stop()
         self.avatar_state = "idle"
         self.avatar_interval = 8000
-        self.show_current_frame()  # mostra o primeiro frame imediatamente
+        self.show_current_frame()
         self.avatar_timer.start(self.avatar_interval)
 
     def set_avatar_thinking(self):
@@ -163,7 +165,7 @@ class ChatWindow(QMainWindow):
     def set_avatar_speaking(self):
         self.avatar_timer.stop()
         self.avatar_state = "speaking"
-        self.avatar_interval = 2000
+        self.avatar_interval = 800
         self.show_current_frame()
         self.avatar_timer.start(self.avatar_interval)
 
@@ -185,7 +187,7 @@ class ChatWindow(QMainWindow):
         if not frames:
             return
 
-        self.current_frame = random.randint(0, len(frames)-1)
+        self.current_frame = (self.current_frame + 1) % len(frames)
         pixmap = QPixmap(frames[self.current_frame])
         if not pixmap.isNull():
             size = int(700 * self.avatar_zoom)

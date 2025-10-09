@@ -10,10 +10,19 @@ class ChatManager:
         self.scroll_area = scroll_area
         self.input_widget = input_widget
 
+    def clear_messages(self):
+        while self.messages_layout.count():
+            item = self.messages_layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+
     def send_message(self, text):
         text = text.strip()
         if not text:
             return
+        
+        self.clear_messages()
 
         # Mensagem do usuário
         self.add_message(text, is_user=True)
