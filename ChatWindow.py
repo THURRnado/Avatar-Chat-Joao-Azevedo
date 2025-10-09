@@ -1,39 +1,23 @@
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QLabel, QVBoxLayout, QHBoxLayout, 
-    QLineEdit, QScrollArea, QGraphicsOpacityEffect
+    QLineEdit, QScrollArea
 )
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QPixmap, QPainter, QColor
+from PySide6.QtGui import QPixmap
 
+from CentralWidget import CentralWidget
 from ChatManager import ChatManager
-import os, random
-from functools import partial
+import os
 
+#PARTE QUE LIDA COM O LAYOUT PRINCIPAL
 
 def load_frames_from_folder(folder_path):
-    # Lista todos os arquivos da pasta e filtra apenas PNG
     frames = [
         os.path.join(folder_path, f)
         for f in sorted(os.listdir(folder_path))
         if f.lower().endswith(".png")
     ]
     return frames
-
-# ================= Central Widget com fundo =================
-class CentralWidget(QWidget):
-    def __init__(self, background_pixmap, parent=None):
-        super().__init__(parent)
-        self.background_pixmap = background_pixmap
-
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        if not self.background_pixmap.isNull():
-            # Desenha a imagem cobrindo toda a tela
-            painter.drawPixmap(self.rect(), self.background_pixmap)
-            # Escurece um pouco o fundo (opcional)
-            painter.fillRect(self.rect(), QColor(0, 0, 0, 80))
-        super().paintEvent(event)
-
 
 # ================= Janela Principal =================
 class ChatWindow(QMainWindow):
@@ -140,7 +124,6 @@ class ChatWindow(QMainWindow):
             "background-color: transparent; border:none; border-radius:20%;"
         )
 
-
     # ================= Redimensionamento =================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
@@ -194,7 +177,6 @@ class ChatWindow(QMainWindow):
             self.avatar_label.setPixmap(
                 pixmap.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             )
-
 
     def update_avatar_frame(self):
         self.show_current_frame()

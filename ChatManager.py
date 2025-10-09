@@ -1,8 +1,10 @@
-from PySide6.QtWidgets import QLabel, QHBoxLayout, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QWidget
 from PySide6.QtCore import QTimer
 from ChatResponse import ChatResponse
 import pygame
 from ChatBubble import ChatBubble
+
+#ESSA PARTE SERA A RESPONSAVEL COM A COMUNICACAO COM A IA
 
 class ChatManager:
     def __init__(self, messages_layout, scroll_area, input_widget=None):

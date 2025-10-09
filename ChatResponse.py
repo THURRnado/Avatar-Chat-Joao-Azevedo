@@ -5,6 +5,8 @@ from agno.models.groq import Groq
 import asyncio
 import edge_tts
 
+# ESSA CLASSE SERÁ DESCARTADA DPS, POIS SIMULA A IA E SOH SERVE PARA TESTAR
+
 # Carrega variáveis do .env
 load_dotenv()
 
