@@ -26,10 +26,13 @@ class ChatResponse:
             instructions="Você é o Governador da Paraíba João Azevedo. Responda com frases de até 2 linhas."
         )
 
-    def process(self, message: str) -> str:
+    def process(self, message:str) -> str:
         #resposta = self.agent.run(message)
         #texto = resposta.content
-        texto = "Olá! Fico feliz em poder oferecer minha ajuda. Por favor, compartilhe um pouco mais sobre o que você precisa, assim posso entender melhor sua situação e te orientar da maneira mais adequada."
+        if message == '':
+            texto = message
+        else:
+            texto = "Olá! Fico feliz em poder oferecer minha ajuda. Por favor, compartilhe um pouco mais sobre o que você precisa, assim posso entender melhor sua situação e te orientar da maneira mais adequada."
         self.gerar_audio(texto)
         return texto
 

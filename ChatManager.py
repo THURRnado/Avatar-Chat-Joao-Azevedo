@@ -3,6 +3,7 @@ from PySide6.QtCore import QTimer
 from ChatResponse import ChatResponse
 import pygame
 from ChatBubble import ChatBubble
+from avatar_server import iniciar_servidor
 
 #ESSA PARTE SERA A RESPONSAVEL COM A COMUNICACAO COM A IA
 
@@ -12,6 +13,9 @@ class ChatManager:
         self.scroll_area = scroll_area
         self.input_widget = input_widget
 
+        # Inicia o servidor Flask local
+        iniciar_servidor(self)
+
     def clear_messages(self):
         while self.messages_layout.count():
             item = self.messages_layout.takeAt(0)
@@ -19,7 +23,7 @@ class ChatManager:
             if widget is not None:
                 widget.deleteLater()
 
-    def send_message(self, text):
+    def send_message(self, text, confirm):
         text = text.strip()
         if not text:
             return
@@ -27,7 +31,8 @@ class ChatManager:
         self.clear_messages()
 
         # Mensagem do usuário
-        self.add_message(text, is_user=True)
+        if confirm:
+            self.add_message(text, is_user=True)
 
         # Balão temporário "..."
         placeholder_bubble = self.add_message("...", is_user=False)
@@ -35,8 +40,12 @@ class ChatManager:
         main_window.set_avatar_thinking()
 
         def process_and_update():
+
             chat = ChatResponse()
-            resposta_texto = chat.process(message=text)
+            if confirm:
+                resposta_texto = chat.process(message=text)
+            else:
+                resposta_texto = chat.process(message='')
 
             # Atualiza o balão "..." para a resposta real
             placeholder_bubble.label.setText(resposta_texto)
