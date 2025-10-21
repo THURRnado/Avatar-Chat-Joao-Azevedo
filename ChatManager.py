@@ -62,14 +62,14 @@ class ChatManager:
                         pygame.mixer.music.stop()
                         pygame.mixer.quit()
 
+                        if callback:
+                            callback()
+
                 QTimer.singleShot(100, check_audio)
 
             tocar_audio_e_voltar_avatar()
 
         QTimer.singleShot(100, process_and_update)
-
-        if callback:
-            callback()
 
 
     def add_message(self, text, is_user=False):

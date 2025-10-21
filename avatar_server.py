@@ -27,7 +27,7 @@ def escolher():
         confirm_text = f"Você quis dizer: '{texto}'\n\nResponda no tablet, por favor."
         ui_invoker.trigger.emit(confirm_text, False, callback)
 
-        waited = done_event.wait(timeout=10)
+        waited = done_event.wait(timeout=30)
 
         if waited:
             return jsonify({"status": "ok", "confirmacao": True})
@@ -50,7 +50,7 @@ def perguntar():
 
         ui_invoker.trigger.emit(texto, True, callback)
         
-        waited = done_event.wait(timeout=10)
+        waited = done_event.wait(timeout=30)
 
         if waited:
             return jsonify({"status": "ok", "confirmacao": True})
