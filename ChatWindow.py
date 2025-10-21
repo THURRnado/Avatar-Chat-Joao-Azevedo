@@ -148,7 +148,7 @@ class ChatWindow(QMainWindow):
     def set_avatar_speaking(self):
         self.avatar_timer.stop()
         self.avatar_state = "speaking"
-        self.avatar_interval = 800
+        self.avatar_interval = 400
         self.show_current_frame()
         self.avatar_timer.start(self.avatar_interval)
 
