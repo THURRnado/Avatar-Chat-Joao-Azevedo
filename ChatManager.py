@@ -43,9 +43,9 @@ class ChatManager:
 
             chat = ChatResponse()
             if confirm:
-                resposta_texto = chat.process(message=text)
+                resposta_texto = chat.process(message=text, confirm=True)
             else:
-                resposta_texto = chat.process(message='')
+                resposta_texto = chat.process(message=text, confirm=False)
 
             # Atualiza o balão "..." para a resposta real
             placeholder_bubble.label.setText(resposta_texto)

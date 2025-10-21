@@ -20,7 +20,7 @@ class ChatBubble(QWidget):
         
         layout = QVBoxLayout()
         layout.addWidget(self.label)
-        layout.setContentsMargins(26, 20, 26, 20)  # espaço interno do balão
+        layout.setContentsMargins(26, 20, 26, 20)
         self.setLayout(layout)
 
     def paintEvent(self, event):

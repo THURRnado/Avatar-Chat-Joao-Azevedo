@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import threading
-import requests  # biblioteca para enviar a resposta HTTP
-from PySide6.QtCore import QTimer, QObject, Signal
+import requests
+from PySide6.QtCore import QObject, Signal
 
 app = Flask(__name__)
 chat_manager = None
@@ -13,19 +13,19 @@ class UiInvoker(QObject):
 
 ui_invoker = UiInvoker()
 
-@app.route("/falar", methods=["POST"])
-def falar():
+@app.route("/escolha", methods=["POST"])
+def escolher():
     data = request.get_json()
     texto = data.get("texto", "")
 
     if chat_manager:
-        confirm_text = f"Você quis dizer: '{texto}'?"
+        confirm_text = f"Você quis dizer: '{texto}'\n\nResponda no tablet, por favor."
         ui_invoker.trigger.emit(confirm_text, False)
         return jsonify({"status": "ok", "confirmacao": True})
     
 
-@app.route("/falar_final", methods=["POST"])
-def falar_final():
+@app.route("/responder", methods=["POST"])
+def perguntar():
     data = request.get_json()
     texto = data.get("texto", "")
 
