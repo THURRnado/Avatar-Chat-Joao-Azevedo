@@ -29,7 +29,7 @@ class ChatWindow(QMainWindow):
         self.avatar_zoom = 1.3
 
         # Fundo
-        self.background_pixmap = QPixmap("avatar/fundo_farol/gab_gor3_des.jpg")
+        self.background_pixmap = QPixmap("avatar/background/cartoon/gabinete_reuniao_cartoon_desfocado.png")
         
         # Central widget com fundo
         central_widget = CentralWidget(self.background_pixmap)
@@ -106,7 +106,7 @@ class ChatWindow(QMainWindow):
             }
         """)
         self.message_input.returnPressed.connect(
-            lambda: (self.chat_manager.send_message(self.message_input.text()),
+            lambda: (self.chat_manager.send_message(self.message_input.text(), confirm=True),
                      self.message_input.clear())
         )
 

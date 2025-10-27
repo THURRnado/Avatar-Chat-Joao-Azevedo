@@ -11,8 +11,20 @@ class CentralWidget(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         if not self.background_pixmap.isNull():
-            # Desenha a imagem cobrindo toda a tela
-            painter.drawPixmap(self.rect(), self.background_pixmap)
-            # Escurece um pouco o fundo (opcional)
+            # Centraliza a imagem no meio da janela, sem redimensionar
+            pixmap_width = self.background_pixmap.width()
+            pixmap_height = self.background_pixmap.height()
+            widget_width = self.width()
+            widget_height = self.height()
+
+            # Calcula posição para centralizar
+            x = (widget_width - pixmap_width) // 2
+            y = (widget_height - pixmap_height) // 2
+
+            # Desenha sem redimensionar
+            painter.drawPixmap(x, y, self.background_pixmap)
+
+            # Escurece o fundo (opcional)
             painter.fillRect(self.rect(), QColor(0, 0, 0, 80))
+
         super().paintEvent(event)
