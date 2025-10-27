@@ -29,7 +29,7 @@ class ChatWindow(QMainWindow):
         self.avatar_zoom = 1.3
 
         # Fundo
-        self.background_pixmap = QPixmap("avatar/background/cartoon/gabinete_reuniao_cartoon_desfocado.png")
+        self.background_pixmap = QPixmap("avatar/background/cartoon/gabinete_pessoal_cartoon_desfocado.png")
         
         # Central widget com fundo
         central_widget = CentralWidget(self.background_pixmap)
