@@ -12,15 +12,13 @@ class CentralWidget(QWidget):
         if not self.background_pixmap.isNull():
             # Redimensiona o fundo para ocupar todo o espaço do widget
             scaled_pixmap = self.background_pixmap.scaled(
-                self.size(),              # redimensiona conforme o tamanho da janela
-                Qt.IgnoreAspectRatio,     # estica sem manter proporção
-                Qt.SmoothTransformation   # suaviza a imagem ao redimensionar
+                self.size(),
+                Qt.IgnoreAspectRatio,
+                Qt.SmoothTransformation 
             )
 
-            # Desenha a imagem redimensionada ocupando todo o espaço
             painter.drawPixmap(0, 0, scaled_pixmap)
 
-            # Escurece o fundo (opcional)
             painter.fillRect(self.rect(), QColor(0, 0, 0, 80))
 
         super().paintEvent(event)

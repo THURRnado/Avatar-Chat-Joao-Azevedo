@@ -12,7 +12,7 @@ load_dotenv()
 
 
 class ChatResponse:
-    def __init__(self, audio_file="audio/saida/resposta.mp3"):
+    def __init__(self, audio_file="audio/saida/resposta.wav"):
         self.api_key = os.getenv("GROQ_API_KEY")
         self.audio_file = audio_file
 

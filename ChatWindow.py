@@ -24,7 +24,7 @@ class ChatWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chat com JA")
-        self.setGeometry(0, 0, 1080, 1024)
+        self.setGeometry(390, 15, 1080, 1024)
 
         self.avatar_zoom = 1.3
 
