@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPainter, QColor
-
-#PARTE QUE LIDA COM A PARTE DE FUNDO DO CHAT
+from PySide6.QtCore import Qt
 
 class CentralWidget(QWidget):
     def __init__(self, background_pixmap, parent=None):
@@ -11,18 +10,15 @@ class CentralWidget(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         if not self.background_pixmap.isNull():
-            # Centraliza a imagem no meio da janela, sem redimensionar
-            pixmap_width = self.background_pixmap.width()
-            pixmap_height = self.background_pixmap.height()
-            widget_width = self.width()
-            widget_height = self.height()
+            # Redimensiona o fundo para ocupar todo o espaço do widget
+            scaled_pixmap = self.background_pixmap.scaled(
+                self.size(),              # redimensiona conforme o tamanho da janela
+                Qt.IgnoreAspectRatio,     # estica sem manter proporção
+                Qt.SmoothTransformation   # suaviza a imagem ao redimensionar
+            )
 
-            # Calcula posição para centralizar
-            x = (widget_width - pixmap_width) // 2
-            y = (widget_height - pixmap_height) // 2
-
-            # Desenha sem redimensionar
-            painter.drawPixmap(x, y, self.background_pixmap)
+            # Desenha a imagem redimensionada ocupando todo o espaço
+            painter.drawPixmap(0, 0, scaled_pixmap)
 
             # Escurece o fundo (opcional)
             painter.fillRect(self.rect(), QColor(0, 0, 0, 80))

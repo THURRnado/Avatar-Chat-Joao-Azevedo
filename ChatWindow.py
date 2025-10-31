@@ -24,7 +24,7 @@ class ChatWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chat com JA")
-        self.setGeometry(0, 0, 1200, 1200)
+        self.setGeometry(0, 0, 1080, 1024)
 
         self.avatar_zoom = 1.3
 
@@ -119,7 +119,7 @@ class ChatWindow(QMainWindow):
         # Avatar
         self.avatar_label = QLabel(self)
         self.avatar_label.setFixedSize(1000, 1000)
-        self.avatar_label.move(50, self.height() - 900)
+        self.avatar_label.move(0, self.height() - 870)
         self.avatar_label.setStyleSheet(
             "background-color: transparent; border:none; border-radius:20%;"
         )
@@ -127,7 +127,7 @@ class ChatWindow(QMainWindow):
     # ================= Redimensionamento =================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            self.avatar_label.move(50, self.height() - 900)
+            self.avatar_label.move(0, self.height() - 870)
         super().resizeEvent(event)
 
     # ================= Estados do avatar =================
