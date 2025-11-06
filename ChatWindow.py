@@ -24,7 +24,7 @@ class ChatWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chat com JA")
-        self.setGeometry(390, 15, 1080, 1024)
+        self.setGeometry(390, 15, 1200, 1024)
 
         self.avatar_zoom = 1.3
 
@@ -46,9 +46,9 @@ class ChatWindow(QMainWindow):
         )
 
         self.avatar_frames = {
-            "idle": load_frames_from_folder("avatar/solo/avatar_parado"),
+            "idle": load_frames_from_folder("avatar/solo/avatar_parado(new)"),
             "thinking": load_frames_from_folder("avatar/solo/avatar_pensando"),
-            "speaking": load_frames_from_folder("avatar/solo/avatar_falando"),
+            "speaking": load_frames_from_folder("avatar/solo/avatar_falando(new)"),
         }
 
         self.current_frame = 0
@@ -149,6 +149,32 @@ class ChatWindow(QMainWindow):
         self.avatar_timer.stop()
         self.avatar_state = "speaking"
         self.avatar_interval = 400
+        self.show_current_frame()
+        self.avatar_timer.start(self.avatar_interval)
+
+    # ================= Estados do avatar (para teste) =================
+
+    def set_avatar_mouth_closed(self):
+        """Define o avatar com a boca fechada (sem fala)."""
+        self.avatar_timer.stop()
+        self.avatar_state = "mouth_closed"
+        self.avatar_interval = 500
+        self.show_current_frame()
+        self.avatar_timer.start(self.avatar_interval)
+
+    def set_avatar_mouth_half(self):
+        """Define o avatar com a boca semiaberta (fala suave)."""
+        self.avatar_timer.stop()
+        self.avatar_state = "mouth_half"
+        self.avatar_interval = 500
+        self.show_current_frame()
+        self.avatar_timer.start(self.avatar_interval)
+
+    def set_avatar_mouth_open(self):
+        """Define o avatar com a boca aberta (fala intensa)."""
+        self.avatar_timer.stop()
+        self.avatar_state = "mouth_open"
+        self.avatar_interval = 500
         self.show_current_frame()
         self.avatar_timer.start(self.avatar_interval)
 

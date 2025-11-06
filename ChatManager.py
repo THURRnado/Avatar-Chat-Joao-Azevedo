@@ -5,7 +5,7 @@ import pygame
 from ChatBubble import ChatBubble
 from avatar_server import iniciar_servidor
 
-#ESSA PARTE SERA A RESPONSAVEL COM A COMUNICACAO COM A IA
+# ESSA PARTE SERA A RESPONSAVEL COM A COMUNICACAO COM A IA
 
 class ChatManager:
     def __init__(self, messages_layout, scroll_area, input_widget=None):
@@ -37,7 +37,6 @@ class ChatManager:
         main_window.set_avatar_thinking()
 
         def process_and_update():
-
             chat = ChatResponse()
             if confirm:
                 resposta_texto = chat.process(message=text, confirm=True)
@@ -51,7 +50,7 @@ class ChatManager:
 
             def tocar_audio_e_voltar_avatar():
                 pygame.mixer.init()
-                pygame.mixer.music.load(chat.audio_file)
+                pygame.mixer.music.load("audio/saida/resposta.wav")
                 pygame.mixer.music.play()
 
                 def check_audio():
@@ -70,7 +69,6 @@ class ChatManager:
             tocar_audio_e_voltar_avatar()
 
         QTimer.singleShot(100, process_and_update)
-
 
     def add_message(self, text, is_user=False):
         bubble = ChatBubble(text, is_user)
@@ -91,4 +89,3 @@ class ChatManager:
             self.scroll_area.verticalScrollBar().maximum()
         )
         return bubble
-
