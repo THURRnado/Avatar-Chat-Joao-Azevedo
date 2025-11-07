@@ -58,7 +58,6 @@ class ChatWindow(QMainWindow):
         self.avatar_state = "idle"
         self.avatar_timer.timeout.connect(self.update_avatar_frame)
         self.set_avatar_idle()
-        
 
     # ================= Setup UI =================
     def setup_ui(self, central_widget):
@@ -127,14 +126,15 @@ class ChatWindow(QMainWindow):
     # ================= Redimensionamento =================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            self.avatar_label.move(0, self.height() - 870)
+            base_y = self.height() - 870
+            self.avatar_label.move(0, base_y - int(getattr(self, 'breath_offset', 0)))
         super().resizeEvent(event)
 
     # ================= Estados do avatar =================
     def set_avatar_idle(self):
         self.avatar_timer.stop()
         self.avatar_state = "idle"
-        self.avatar_interval = 8000
+        self.avatar_interval = 5000
         self.show_current_frame()
         self.avatar_timer.start(self.avatar_interval)
 
@@ -148,32 +148,6 @@ class ChatWindow(QMainWindow):
     def set_avatar_speaking(self):
         self.avatar_timer.stop()
         self.avatar_state = "speaking"
-        self.avatar_interval = 400
-        self.show_current_frame()
-        self.avatar_timer.start(self.avatar_interval)
-
-    # ================= Estados do avatar (para teste) =================
-
-    def set_avatar_mouth_closed(self):
-        """Define o avatar com a boca fechada (sem fala)."""
-        self.avatar_timer.stop()
-        self.avatar_state = "mouth_closed"
-        self.avatar_interval = 500
-        self.show_current_frame()
-        self.avatar_timer.start(self.avatar_interval)
-
-    def set_avatar_mouth_half(self):
-        """Define o avatar com a boca semiaberta (fala suave)."""
-        self.avatar_timer.stop()
-        self.avatar_state = "mouth_half"
-        self.avatar_interval = 500
-        self.show_current_frame()
-        self.avatar_timer.start(self.avatar_interval)
-
-    def set_avatar_mouth_open(self):
-        """Define o avatar com a boca aberta (fala intensa)."""
-        self.avatar_timer.stop()
-        self.avatar_state = "mouth_open"
         self.avatar_interval = 500
         self.show_current_frame()
         self.avatar_timer.start(self.avatar_interval)
