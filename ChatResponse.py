@@ -20,13 +20,14 @@ class ChatResponse:
     def process(self, message:str, confirm) -> str:
         texto = message
         if confirm:
-            texto = "A resposta poderá ser dada quando minha IA estiver com as capacidades para isso. Porém obrigado por perguntar!"
+            self.remove_audio()
+            self.gerar_audio(texto)
         else:
             texto = message
-        self.gerar_audio(texto)
         return texto
+    
 
-    async def _gerar_audio_async(self, texto: str):
+    def remove_audio(self):
         # Garante que a pasta existe
         os.makedirs(os.path.dirname(self.audio_file), exist_ok=True)
 
@@ -36,6 +37,10 @@ class ChatResponse:
         except Exception:
             pass
 
+        return
+
+
+    async def _gerar_audio_async(self, texto: str):
         # Cria o áudio temporário
         temp_file = self.audio_file
         communicate = edge_tts.Communicate(texto, "pt-BR-AntonioNeural")

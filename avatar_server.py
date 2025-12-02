@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import threading
 import requests
 from PySide6.QtCore import QObject, Signal
-from ChatResponse import ChatResponse
+import os
 
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ def escolher():
             done_event.set()
 
         confirm_text = f"Você quis dizer: '{texto}'\n\nResponda no tablet, por favor."
-        ui_invoker.trigger.emit(confirm_text, False, callback)
+        ui_invoker.trigger.emit(confirm_text, True, callback)
 
         waited = done_event.wait(timeout=30)
 
@@ -41,10 +41,20 @@ def escolher():
 
 @app.route("/responder", methods=["POST"])
 def perguntar():
-    data = request.get_json()
-    texto = data.get("texto", "")
+    texto = request.form.get("texto", "")
+    audio = request.files.get("audio")
 
-    print("TEXTO RECEBIDO PELA IA: "+texto)
+    print("TEXTO RECEBIDO PELA IA:", texto)
+
+    if audio:
+        # Salvar para tocar
+        audio_path = "audio/saida/resposta.wav"
+        os.remove(audio_path)
+        audio.save(audio_path)
+        print("Áudio recebido e salvo em:", audio_path)
+
+        # Aqui você pode tocar usando alguma lib interna
+        # ou enviar para o sistema que faz a reprodução
 
     if chat_manager:
 

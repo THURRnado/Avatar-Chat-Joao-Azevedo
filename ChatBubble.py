@@ -5,6 +5,9 @@ from PySide6.QtCore import Qt, QPoint
 class ChatBubble(QWidget):
     def __init__(self, text, is_user=False, parent=None):
         super().__init__(parent)
+
+        self.setMaximumWidth(500)
+
         self.is_user = is_user
         self.bg_color = QColor("#13618b") if is_user else QColor("#2d2d2d")
         self.text_color = Qt.white

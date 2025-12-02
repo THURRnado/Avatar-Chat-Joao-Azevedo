@@ -29,8 +29,8 @@ class ChatManager:
         
         self.clear_messages()
 
-        if confirm:
-            self.add_message(text, is_user=True)
+        '''if confirm:
+            self.add_message(text, is_user=True)'''
 
         placeholder_bubble = self.add_message("...", is_user=False)
         main_window = self.scroll_area.window()
@@ -48,9 +48,9 @@ class ChatManager:
             main_window = self.scroll_area.window()
             main_window.set_avatar_speaking()
 
-            def tocar_audio_e_voltar_avatar():
+            def tocar_audio_e_voltar_avatar(path_audio):
                 pygame.mixer.init()
-                pygame.mixer.music.load("audio/saida/resposta.wav")
+                pygame.mixer.music.load(path_audio)
                 pygame.mixer.music.play()
 
                 def check_audio():
@@ -66,7 +66,7 @@ class ChatManager:
 
                 QTimer.singleShot(100, check_audio)
 
-            tocar_audio_e_voltar_avatar()
+            tocar_audio_e_voltar_avatar(path_audio="audio/saida/resposta.wav")
 
         QTimer.singleShot(100, process_and_update)
 
