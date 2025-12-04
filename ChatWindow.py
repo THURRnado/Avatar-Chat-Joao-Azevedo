@@ -136,7 +136,7 @@ class ChatWindow(QMainWindow):
         # Avatar
         self.avatar_label = QLabel(self)
         self.avatar_label.setFixedSize(1000, 1000)
-        self.avatar_label.move(0, self.height() - 850)
+        self.avatar_label.move(0, self.height() - 850) # <-- altera altura do avatar
         self.avatar_label.setStyleSheet(
             "background-color: transparent; border:none; border-radius:20%;"
         )
@@ -146,7 +146,7 @@ class ChatWindow(QMainWindow):
     # =================== Redimensionamento do avatar ===================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            base_y = self.height() - 850
+            base_y = self.height() - 850 # <-- altera altura do avatar
             self.avatar_label.move(0, base_y - int(getattr(self, 'breath_offset', 0)))
         super().resizeEvent(event)
 
