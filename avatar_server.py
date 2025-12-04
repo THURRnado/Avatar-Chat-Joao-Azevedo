@@ -2,11 +2,13 @@ from flask import Flask, request, jsonify
 import threading
 import requests
 from PySide6.QtCore import QObject, Signal
+from ChatResponse import ChatResponse
+
 
 app = Flask(__name__)
 chat_manager = None
 
-DJANGO_CALLBACK_URL = "http://localhost:8000/api/avatar/retorno/"
+DJANGO_CALLBACK_URL = "http://192.168.0.147:8000/api/avatar/retorno/"
 
 class UiInvoker(QObject):
     trigger = Signal(str, bool, object)
@@ -42,13 +44,16 @@ def perguntar():
     data = request.get_json()
     texto = data.get("texto", "")
 
+    print("TEXTO RECEBIDO PELA IA: "+texto)
+
     if chat_manager:
+
         done_event = threading.Event()
 
         def callback():
             done_event.set()
 
-        ui_invoker.trigger.emit(texto, True, callback)
+        ui_invoker.trigger.emit(texto, False, callback)
         
         waited = done_event.wait(timeout=30)
 
@@ -78,5 +83,5 @@ def iniciar_servidor(chat_manager_ref):
     chat_manager = chat_manager_ref
     ui_invoker.trigger.connect(chat_manager.send_message)
 
-    print("[Servidor Flask] Iniciando servidor em http://localhost:5000 ...")
+    print("[Servidor Flask] Iniciando servidor...")
     threading.Thread(target=lambda: app.run(host="localhost", port=5000, debug=False, use_reloader=False), daemon=True).start()

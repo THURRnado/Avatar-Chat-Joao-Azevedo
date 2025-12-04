@@ -15,22 +15,10 @@ load_dotenv()
 
 class ChatResponse:
     def __init__(self, audio_file="audio/saida/resposta.mp3"):
-        self.api_key = os.getenv("GROQ_API_KEY")
         self.audio_file = audio_file
 
-        # inicializa o agente
-        self.agent = Agent(
-            model=Groq(
-                id="llama-3.1-8b-instant",
-                api_key=self.api_key
-            ),
-            name="Agente João Azevedo",
-            instructions="Você é o Governador da Paraíba João Azevedo. Responda com frases de até 2 linhas."
-        )
-
     def process(self, message:str, confirm) -> str:
-        #resposta = self.agent.run(message)
-        #texto = resposta.content
+        texto = message
         if confirm:
             texto = "A resposta poderá ser dada quando minha IA estiver com as capacidades para isso. Porém obrigado por perguntar!"
         else:
