@@ -90,7 +90,7 @@ class ChatWindow(QMainWindow):
 
         # Layout do chat
         chat_layout = QVBoxLayout()
-        chat_layout.setContentsMargins(0, 0, 0, 500)
+        chat_layout.setContentsMargins(0, 0, 0, 480)
         chat_layout.setSpacing(10)
 
         # Scroll area para mensagens
@@ -136,7 +136,7 @@ class ChatWindow(QMainWindow):
         # Avatar
         self.avatar_label = QLabel(self)
         self.avatar_label.setFixedSize(1000, 1000)
-        self.avatar_label.move(0, self.height() - 870)
+        self.avatar_label.move(0, self.height() - 850)
         self.avatar_label.setStyleSheet(
             "background-color: transparent; border:none; border-radius:20%;"
         )
@@ -146,7 +146,7 @@ class ChatWindow(QMainWindow):
     # =================== Redimensionamento do avatar ===================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
-            base_y = self.height() - 870
+            base_y = self.height() - 850
             self.avatar_label.move(0, base_y - int(getattr(self, 'breath_offset', 0)))
         super().resizeEvent(event)
 
