@@ -217,7 +217,7 @@ class ChatWindow(QMainWindow):
         if self.audio_data is None:
             return
         
-        chunk_size = 2048
+        chunk_size = 1024
         chunk = self.audio_data[self.audio_index:self.audio_index + chunk_size]
         self.audio_index += chunk_size
 
@@ -228,7 +228,7 @@ class ChatWindow(QMainWindow):
         volume = np.linalg.norm(chunk) * 10
         frames = self.avatar_frames["speaking"]
 
-        THRESHOLD = 10
+        THRESHOLD = 20
 
         target_frame = 1 if volume > THRESHOLD else 0
 
