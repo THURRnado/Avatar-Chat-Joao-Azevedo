@@ -2,3 +2,4 @@ venv/
 __pycache__
 teste.css
 .env
+audio/saida/*
