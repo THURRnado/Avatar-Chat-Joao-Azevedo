@@ -3,3 +3,4 @@ __pycache__
 teste.css
 .env
 audio/saida/*
+!audio/saida/.gitkeep

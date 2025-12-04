@@ -8,9 +8,11 @@ from PySide6.QtGui import QPixmap
 from CentralWidget import CentralWidget
 from ChatManager import ChatManager
 import os
+import soundfile as sf
+import numpy as np
 
-#PARTE QUE LIDA COM O LAYOUT PRINCIPAL
 
+# ----------- Função para carregar frames -----------
 def load_frames_from_folder(folder_path):
     frames = [
         os.path.join(folder_path, f)
@@ -19,7 +21,9 @@ def load_frames_from_folder(folder_path):
     ]
     return frames
 
-# ================= Janela Principal =================
+
+
+# ========================= Janela Principal =========================
 class ChatWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -30,7 +34,7 @@ class ChatWindow(QMainWindow):
 
         # Fundo
         self.background_pixmap = QPixmap("avatar/background/cartoon/gabinete_pessoal_cartoon_desfocado.png")
-        
+
         # Central widget com fundo
         central_widget = CentralWidget(self.background_pixmap)
         self.setCentralWidget(central_widget)
@@ -45,6 +49,7 @@ class ChatWindow(QMainWindow):
             input_widget=self.message_input
         )
 
+        # Frames do avatar
         self.avatar_frames = {
             "idle": load_frames_from_folder("avatar/solo/avatar_parado(new)"),
             "thinking": load_frames_from_folder("avatar/solo/avatar_pensando"),
@@ -53,13 +58,26 @@ class ChatWindow(QMainWindow):
 
         self.current_frame = 0
 
+        # ---- Timer NOVO para sincronizar áudio -> frames ----
+        self.audio_volume_timer = QTimer()
+        self.audio_volume_timer.setInterval(40)
+        self.audio_volume_timer.timeout.connect(self.update_speaking_from_audio)
+
+        # Controle do áudio
+        self.audio_data = None
+        self.audio_index = 0
+        self.audio_sample_rate = 1
+
+        # Timer antigo (idle e thinking)
         self.avatar_timer = QTimer()
         self.avatar_interval = 2000
         self.avatar_state = "idle"
         self.avatar_timer.timeout.connect(self.update_avatar_frame)
         self.set_avatar_idle()
 
-    # ================= Setup UI =================
+
+
+    # ========================= Setup UI =========================
     def setup_ui(self, central_widget):
         main_layout = QHBoxLayout(central_widget)
         main_layout.setContentsMargins(10, 10, 10, 10)
@@ -123,16 +141,21 @@ class ChatWindow(QMainWindow):
             "background-color: transparent; border:none; border-radius:20%;"
         )
 
-    # ================= Redimensionamento =================
+
+
+    # =================== Redimensionamento do avatar ===================
     def resizeEvent(self, event):
         if hasattr(self, 'avatar_label'):
             base_y = self.height() - 870
             self.avatar_label.move(0, base_y - int(getattr(self, 'breath_offset', 0)))
         super().resizeEvent(event)
 
-    # ================= Estados do avatar =================
+
+
+    # =================== Estados (idle, thinking, speaking) ===================
     def set_avatar_idle(self):
         self.avatar_timer.stop()
+        self.audio_volume_timer.stop()
         self.avatar_state = "idle"
         self.avatar_interval = 5000
         self.show_current_frame()
@@ -140,29 +163,31 @@ class ChatWindow(QMainWindow):
 
     def set_avatar_thinking(self):
         self.avatar_timer.stop()
+        self.audio_volume_timer.stop()
         self.avatar_state = "thinking"
         self.avatar_interval = 2000
         self.show_current_frame()
         self.avatar_timer.start(self.avatar_interval)
 
-    def set_avatar_speaking(self):
+    def set_avatar_speaking(self, wav_path):
+        """
+        ATIVA a sincronização pelo áudio.
+        """
         self.avatar_timer.stop()
         self.avatar_state = "speaking"
-        self.avatar_interval = 500
-        self.show_current_frame()
-        self.avatar_timer.start(self.avatar_interval)
 
-    # ================= Helper =================
-    def load_avatar_image(self, path):
-        pixmap = QPixmap(path)
-        if not pixmap.isNull():
-            self.avatar_label.setPixmap(
-                pixmap.scaled(700, 700, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            )
-        else:
-            self.avatar_label.setText("Imagem\nnão\nencontrada")
+        # Carrega o áudio
+        self.audio_data, self.audio_sample_rate = sf.read(wav_path)
+        if len(self.audio_data.shape) > 1:
+            self.audio_data = self.audio_data.mean(axis=1)
+
+        self.audio_index = 0
+
+        self.audio_volume_timer.start()
 
 
+
+    # =================== Mostrar frame ===================
     def show_current_frame(self):
         if self.avatar_state not in self.avatar_frames:
             return
@@ -178,6 +203,43 @@ class ChatWindow(QMainWindow):
                 pixmap.scaled(size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             )
 
+
+
+    # =================== (idle/thinking) ===================
     def update_avatar_frame(self):
         self.show_current_frame()
         self.avatar_timer.setInterval(self.avatar_interval)
+
+
+
+    # =================== Sincronização com o áudio ===================
+    def update_speaking_from_audio(self):
+        if self.audio_data is None:
+            return
+        
+        chunk_size = 2048
+        chunk = self.audio_data[self.audio_index:self.audio_index + chunk_size]
+        self.audio_index += chunk_size
+
+        if len(chunk) == 0:
+            self.set_avatar_idle()
+            return
+
+        volume = np.linalg.norm(chunk) * 10
+        frames = self.avatar_frames["speaking"]
+
+        THRESHOLD = 10
+
+        target_frame = 1 if volume > THRESHOLD else 0
+
+        if target_frame != self.current_frame:
+            self.current_frame = target_frame
+            pix = QPixmap(frames[self.current_frame])
+            self.avatar_label.setPixmap(
+                pix.scaled(
+                    int(700 * self.avatar_zoom),
+                    int(700 * self.avatar_zoom),
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation
+                )
+            )

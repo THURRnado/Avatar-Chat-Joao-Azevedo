@@ -45,8 +45,10 @@ class ChatManager:
 
             placeholder_bubble.label.setText(resposta_texto)
 
+            path_audio="audio/saida/resposta.wav"
+
             main_window = self.scroll_area.window()
-            main_window.set_avatar_speaking()
+            main_window.set_avatar_speaking(path_audio)
 
             def tocar_audio_e_voltar_avatar(path_audio):
                 pygame.mixer.init()
@@ -66,7 +68,7 @@ class ChatManager:
 
                 QTimer.singleShot(100, check_audio)
 
-            tocar_audio_e_voltar_avatar(path_audio="audio/saida/resposta.wav")
+            tocar_audio_e_voltar_avatar(path_audio)
 
         QTimer.singleShot(100, process_and_update)
 

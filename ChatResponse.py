@@ -43,7 +43,7 @@ class ChatResponse:
     async def _gerar_audio_async(self, texto: str):
         # Cria o áudio temporário
         temp_file = self.audio_file
-        communicate = edge_tts.Communicate(texto, "pt-BR-AntonioNeural")
+        communicate = edge_tts.Communicate(texto, "pt-BR-HumbertoNeural", rate="-30%")
         await communicate.save(temp_file)
 
         # Converte para WAV PCM compatível com pygame
